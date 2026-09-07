@@ -1,0 +1,589 @@
+/* Dam Break Inundation Modelling & Flood Risk Simulation — Minimal GIS Engineering UI */
+
+:root {
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bg-page: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-muted: #f1f5f9;
+  --border-color: #cbd5e1;
+  --border-subtle: #e2e8f0;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  
+  --primary-navy: #1e3a8a;
+  --primary-hover: #1e40af;
+  
+  /* Restrained Risk Palette */
+  --risk-low-text: #15803d;
+  --risk-low-bg: #f0fdf4;
+  --risk-low-border: #bbf7d0;
+  
+  --risk-mod-text: #b45309;
+  --risk-mod-bg: #fffbeb;
+  --risk-mod-border: #fde68a;
+  
+  --risk-high-text: #c2410c;
+  --risk-high-bg: #fff7ed;
+  --risk-high-border: #fed7aa;
+  
+  --risk-crit-text: #b91c1c;
+  --risk-crit-bg: #fef2f2;
+  --risk-crit-border: #fecaca;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.45;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* App Header */
+header {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.65rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-title-group h1 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--primary-navy);
+  letter-spacing: -0.01em;
+}
+
+.app-title-group .app-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 1.25rem;
+  padding-bottom: 2px;
+}
+
+nav a:hover, nav a.active {
+  color: var(--primary-navy);
+  border-bottom: 2px solid var(--primary-navy);
+}
+
+/* Layout Containers */
+.container {
+  max-width: 1280px;
+  margin: 1.25rem auto;
+  padding: 0 1rem;
+  width: 100%;
+  flex: 1;
+}
+
+.container-narrow {
+  max-width: 680px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+  width: 100%;
+  flex: 1;
+}
+
+/* Cards & Panels */
+.panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.panel-header {
+  padding: 0.6rem 1rem;
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-body {
+  padding: 1rem;
+}
+
+/* Input Form */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.helper-text {
+  font-size: 0.725rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+input[type="number"],
+input[type="text"],
+select {
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: #ffffff;
+  outline: none;
+  font-family: inherit;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary-navy);
+  box-shadow: 0 0 0 1px var(--primary-navy);
+}
+
+.inline-error {
+  color: #b91c1c;
+  font-size: 0.725rem;
+  margin-top: 0.2rem;
+  display: none;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.25rem;
+  border-radius: 3px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s ease-in-out;
+}
+
+.btn-primary {
+  background: var(--primary-navy);
+  color: #ffffff;
+  border-color: var(--primary-navy);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-primary:disabled {
+  background: #94a3b8;
+  border-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-muted);
+  color: var(--text-primary);
+}
+
+/* Dashboard Summary KPI Grid */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summary-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+}
+
+.summary-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.summary-value {
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.summary-unit {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* Risk Assessment Banner */
+.risk-panel {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 600px) {
+  .risk-panel {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.risk-level-badge {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.35rem 0.85rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.risk-LOW {
+  color: var(--risk-low-text);
+  background: var(--risk-low-bg);
+  border: 1px solid var(--risk-low-border);
+}
+
+.risk-MODERATE {
+  color: var(--risk-mod-text);
+  background: var(--risk-mod-bg);
+  border: 1px solid var(--risk-mod-border);
+}
+
+.risk-HIGH {
+  color: var(--risk-high-text);
+  background: var(--risk-high-bg);
+  border: 1px solid var(--risk-high-border);
+}
+
+.risk-CRITICAL {
+  color: var(--risk-crit-text);
+  background: var(--risk-crit-bg);
+  border: 1px solid var(--risk-crit-border);
+}
+
+.risk-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.risk-stat-value {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Map Area */
+#map {
+  height: 520px;
+  width: 100%;
+  border-radius: 3px;
+  border: 1px solid var(--border-color);
+}
+
+/* Technical Data Table */
+table.tech-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.825rem;
+}
+
+table.tech-table th {
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+}
+
+table.tech-table td {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+table.tech-table tr:nth-child(even) {
+  background: #fbfcfe;
+}
+
+/* Charts Container */
+.chart-box {
+  height: 250px;
+  width: 100%;
+}
+
+/* Status & Message Banners */
+.status-banner {
+  padding: 0.65rem 1rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.status-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.status-running {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+}
+
+.status-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Quick Scenario Presets Bar */
+.preset-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.preset-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preset-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.preset-chip {
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.35rem 0.75rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+}
+
+.preset-chip:hover {
+  background: #e2e8f0;
+  border-color: var(--primary-navy);
+  color: var(--primary-navy);
+}
+
+.preset-chip.active {
+  background: var(--primary-navy);
+  color: #ffffff;
+  border-color: var(--primary-navy);
+}
+
+.preset-chip .chip-tag {
+  font-size: 0.675rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.08);
+  font-weight: 600;
+}
+
+.preset-chip.active .chip-tag {
+  background: rgba(255,255,255,0.25);
+  color: #ffffff;
+}
+
+/* Unified Workbench Grid */
+.workbench-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .workbench-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Engine & Status Badges */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.725rem;
+  font-weight: 700;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-sph {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.badge-delft3d {
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}
+
+.badge-fallback {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.badge-critical {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.badge-high {
+  background: #ffedd5;
+  color: #9a3412;
+  border: 1px solid #fed7aa;
+}
+
+.badge-moderate {
+  background: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fef08a;
+}
+
+.badge-low {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+/* Loading Overlay */
+#loading-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 0.85rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Footer */
+footer {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  padding: 0.75rem 1.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: auto;
+}

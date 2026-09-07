@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Output directories & archives
+outputs/shp/*
+outputs/kml/*
+outputs/geojson/*
+outputs/scenarios/*
+outputs/delft3d/*
+!outputs/shp/.gitkeep
+!outputs/kml/.gitkeep
+!outputs/geojson/.gitkeep
+!outputs/scenarios/.gitkeep
+!outputs/delft3d/.gitkeep
+
+# IDE / Editor artifacts
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/

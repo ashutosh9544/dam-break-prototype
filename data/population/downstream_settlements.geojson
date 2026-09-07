@@ -1,0 +1,90 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Burla",
+        "category": "Township",
+        "population": 46000,
+        "distance_km": 3.2,
+        "elevation_m": 168
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.875,
+          21.503
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sambalpur City",
+        "category": "Municipal Corporation",
+        "population": 184000,
+        "distance_km": 14.5,
+        "elevation_m": 150
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.978,
+          21.466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Dhankauda",
+        "category": "Suburban Settlement",
+        "population": 15200,
+        "distance_km": 11.8,
+        "elevation_m": 154
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.955,
+          21.485
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Chiplima",
+        "category": "Power Village",
+        "population": 7800,
+        "distance_km": 16.0,
+        "elevation_m": 144
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.918,
+          21.412
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Hirakud Town",
+        "category": "Industrial Town",
+        "population": 31000,
+        "distance_km": 2.5,
+        "elevation_m": 172
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.882,
+          21.535
+        ]
+      }
+    }
+  ]
+}

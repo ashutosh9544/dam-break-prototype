@@ -1,0 +1,25 @@
+{
+  "optical_source": "Copernicus Sentinel-2 MSI (Level-2A)",
+  "radar_source": "Copernicus Sentinel-1 SAR GRD (C-band IW)",
+  "study_area": {
+    "name": "Mahanadi River Basin - Hirakud Downstream",
+    "bbox": [
+      83.8,
+      21.4,
+      84.05,
+      21.6
+    ],
+    "crs": "EPSG:4326"
+  },
+  "near_real_time_gee_workflow": {
+    "collection_sentinel1": "COPERNICUS/S1_GRD",
+    "polarization": [
+      "VV",
+      "VH"
+    ],
+    "instrument_mode": "IW",
+    "orbit_pass": "DESCENDING",
+    "flood_detection_method": "Otsu thresholding on log-ratio SAR backscatter (VV)",
+    "gee_script_reference": "scripts/gee_flood_detection.js"
+  }
+}

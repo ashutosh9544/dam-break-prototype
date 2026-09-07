@@ -1,0 +1,92 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "National Highway 53 Bridge",
+        "type": "Transportation (Bridge)",
+        "criticality": "CRITICAL"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            83.96,
+            21.48
+          ],
+          [
+            83.975,
+            21.465
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sambalpur Railway Bridge",
+        "type": "Transportation (Rail)",
+        "criticality": "HIGH"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            83.955,
+            21.472
+          ],
+          [
+            83.97,
+            21.458
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Chiplima Hydroelectric Power Station",
+        "type": "Energy Grid",
+        "criticality": "CRITICAL"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.921,
+          21.415
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "VSS Institute of Medical Sciences (Burla)",
+        "type": "Healthcare / Hospital",
+        "criticality": "CRITICAL"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.878,
+          21.501
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sambalpur District Administrative Center",
+        "type": "Government",
+        "criticality": "MODERATE"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.98,
+          21.47
+        ]
+      }
+    }
+  ]
+}

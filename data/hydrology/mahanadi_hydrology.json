@@ -1,0 +1,11 @@
+{
+  "river": "Mahanadi River",
+  "basin": "Mahanadi Basin",
+  "gauge_station": "Sambalpur (CWC Station 021-M)",
+  "baseflow_m3s": 450.0,
+  "manning_roughness_channel": 0.035,
+  "manning_roughness_floodplain": 0.055,
+  "average_river_slope": 0.00045,
+  "average_channel_width_m": 350.0,
+  "monsoon_high_flow_m3s": 12500.0
+}
