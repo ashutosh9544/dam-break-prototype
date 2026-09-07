@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results Dashboard & Scenarios — Dam Break Modelling</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- Loading State Overlay -->
+  <div id="loading-overlay" role="dialog" aria-modal="true" aria-label="Executing Simulation">
+    <div class="spinner"></div>
+    <div style="font-weight: 600; font-size: 1.05rem; letter-spacing: 0.02em;">Running Hydrodynamic Simulation...</div>
+    <div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 0.35rem;">Solving shallow-water flow equations & intersecting GIS layers</div>
+  </div>
+
+  <header>
+    <div class="app-title-group">
+      <h1>Dam Break Modelling & Flood Risk Simulation</h1>
+      <div class="app-subtitle">Hydrodynamic Inundation Analysis Platform — SIH Problem Statement 26161 (NTRO)</div>
+    </div>
+    <nav>
+      <a href="index.html">Engineering Workbench</a>
+      <a href="dashboard.html" class="active">Results & Scenarios</a>
+    </nav>
+  </header>
+
+  <main class="container">
+
+    <!-- QUICK SCENARIO PRESETS BAR -->
+    <section class="preset-section">
+      <div class="preset-header">
+        <span>⚡ Quick Scenario Presets (Indian River Basins)</span>
+        <span style="font-weight: 400; text-transform: none; color: var(--text-muted);">Click any scenario to immediately load parameters & run simulation</span>
+      </div>
+      <div class="preset-chips">
+        <button type="button" class="preset-chip active" data-preset="hirakud">
+          <span class="chip-tag">Mahanadi</span>
+          Hirakud Dam (Monsoon Overtopping)
+        </button>
+        <button type="button" class="preset-chip" data-preset="tehri">
+          <span class="chip-tag">Bhagirathi</span>
+          Tehri Dam (Piping Failure)
+        </button>
+        <button type="button" class="preset-chip" data-preset="idukki">
+          <span class="chip-tag">Periyar</span>
+          Idukki Dam (Arch Gate Breach)
+        </button>
+        <button type="button" class="preset-chip" data-preset="mullaperiyar">
+          <span class="chip-tag">Periyar</span>
+          Mullaperiyar Dam (Flash Surge)
+        </button>
+        <button type="button" class="preset-chip" data-preset="sardar_sarovar">
+          <span class="chip-tag">Narmada</span>
+          Sardar Sarovar Dam (Spillway Overload)
+        </button>
+      </div>
+    </section>
+
+    <!-- UNIFIED WORKBENCH GRID (Left: Inputs | Right: Results & GIS Map) -->
+    <div class="workbench-layout">
+
+      <!-- LEFT COLUMN: SIMULATION CONTROLS -->
+      <div class="panel">
+        <div class="panel-header">
+          <span>Simulation Parameters</span>
+          <span id="selected-basin-info" style="font-size: 0.75rem; text-transform: none; color: var(--text-muted);">Mahanadi River Basin • Hirakud Dam</span>
+        </div>
+        <div class="panel-body">
+          <form id="simulation-form" novalidate>
+            
+            <!-- Hidden context fields for Dam & River -->
+            <input type="hidden" id="dam_name" value="Hirakud Dam">
+            <input type="hidden" id="river_name" value="Mahanadi River Basin">
+
+            <div class="form-group" style="margin-bottom: 0.75rem;">
+              <label for="scenario_name">Scenario Identification</label>
+              <input type="text" id="scenario_name" name="scenario_name" value="Hirakud Dam — Monsoon Overtopping Breach" required>
+            </div>
+
+            <div class="form-grid">
+
+              <!-- Water Level -->
+              <div class="form-group">
+                <label for="water_level">Water Level (m)</label>
+                <div class="helper-text">Reservoir head above breach</div>
+                <input type="number" id="water_level" name="water_level" value="58.0" step="0.1" min="0.1" required>
+                <div id="err-water_level" class="inline-error" role="alert" aria-live="assertive">Water level required (> 0).</div>
+              </div>
+
+              <!-- Dam Height -->
+              <div class="form-group">
+                <label for="dam_height">Dam Height (m)</label>
+                <div class="helper-text">Total embankment height</div>
+                <input type="number" id="dam_height" name="dam_height" value="61.0" step="0.1" min="0.1" required>
+                <div id="err-dam_height" class="inline-error" role="alert" aria-live="assertive">Dam height required (> 0).</div>
+              </div>
+
+              <!-- Breach Width -->
+              <div class="form-group">
+                <label for="breach_width">Breach Width (m)</label>
+                <div class="helper-text">Average breach opening width</div>
+                <input type="number" id="breach_width" name="breach_width" value="60.0" step="0.1" min="0.1" required>
+                <div id="err-breach_width" class="inline-error" role="alert" aria-live="assertive">Breach width required (> 0).</div>
+              </div>
+
+              <!-- Breach Time -->
+              <div class="form-group">
+                <label for="breach_time">Breach Time (min)</label>
+                <div class="helper-text">Full breach formation time</div>
+                <input type="number" id="breach_time" name="breach_time" value="35.0" step="0.1" min="0.1" required>
+                <div id="err-breach_time" class="inline-error" role="alert" aria-live="assertive">Breach time required (> 0).</div>
+              </div>
+
+              <!-- Dam Latitude -->
+              <div class="form-group">
+                <label for="dam_latitude">Latitude (°N)</label>
+                <div class="helper-text">Breach location coordinate</div>
+                <input type="number" id="dam_latitude" name="dam_latitude" value="21.5270" step="0.0001" min="-90" max="90" required>
+                <div id="err-dam_latitude" class="inline-error" role="alert" aria-live="assertive">Valid latitude (-90 to +90).</div>
+              </div>
+
+              <!-- Dam Longitude -->
+              <div class="form-group">
+                <label for="dam_longitude">Longitude (°E)</label>
+                <div class="helper-text">Breach location coordinate</div>
+                <input type="number" id="dam_longitude" name="dam_longitude" value="83.8710" step="0.0001" min="-180" max="180" required>
+                <div id="err-dam_longitude" class="inline-error" role="alert" aria-live="assertive">Valid longitude (-180 to +180).</div>
+              </div>
+
+              <!-- Downstream Reach -->
+              <div class="form-group full-width">
+                <label for="downstream_distance">Downstream River Reach (km)</label>
+                <div class="helper-text">Distance along river corridor to compute hydrodynamic propagation</div>
+                <input type="number" id="downstream_distance" name="downstream_distance" value="35.0" step="0.5" min="1.0" max="200" required>
+                <div id="err-downstream_distance" class="inline-error" role="alert" aria-live="assertive">Reach distance required (> 0).</div>
+              </div>
+
+              <!-- Hydrodynamic Engine Selector -->
+              <div class="form-group full-width">
+                <label for="engine-select">Hydrodynamic Solver Engine</label>
+                <select id="engine-select" name="engine">
+                  <option value="SPH" selected>Smooth Particle Hydrodynamics (SPH — 2D Meshless)</option>
+                  <option value="Delft3D">Delft3D Flexible Mesh (with Calibrated Fallback Solver)</option>
+                </select>
+              </div>
+
+            </div>
+
+            <!-- Error Banner -->
+            <div id="form-error-banner" class="status-banner status-error" style="display: none; margin-top: 0.85rem;" role="alert">
+              <span id="form-error-text">Simulation failed. Please check inputs and try again.</span>
+            </div>
+
+            <!-- Submit Button -->
+            <div style="margin-top: 1rem;">
+              <button type="submit" id="run-btn" class="btn btn-primary" style="width: 100%;">
+                Run Hydrodynamic Simulation
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: LIVE RESULTS, MAP & IMPACT -->
+      <div>
+
+        <!-- ACTIVE SCENARIO SUMMARY BANNER -->
+        <div class="risk-panel" style="margin-bottom: 1rem;">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.2rem;">Active Scenario</div>
+            <div id="scenario-title" style="font-size: 1.05rem; font-weight: 700; color: var(--primary-navy);">Hirakud Dam — Monsoon Overtopping Breach</div>
+            <div id="scenario-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem;">Hirakud Dam • Mahanadi River Basin</div>
+          </div>
+          <div style="text-align: center;">
+            <div class="risk-stat-label" style="margin-bottom: 0.25rem;">Solver Engine</div>
+            <span id="engine-badge" class="badge badge-sph">SPH</span>
+          </div>
+          <div style="text-align: right;">
+            <div class="risk-stat-label" style="margin-bottom: 0.25rem;">Overall Risk Assessment</div>
+            <span id="risk-badge" class="risk-level-badge risk-HIGH">HIGH</span>
+          </div>
+        </div>
+
+        <!-- KPI SUMMARY GRID -->
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-label">Peak Outflow Discharge</div>
+            <div class="summary-value" id="kpi-discharge">-- <span class="summary-unit">m³/s</span></div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Maximum Flood Depth</div>
+            <div class="summary-value" id="kpi-depth">-- <span class="summary-unit">m</span></div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">First Wave Arrival Time</div>
+            <div class="summary-value" id="kpi-arrival">-- <span class="summary-unit">min</span></div>
+          </div>
+        </div>
+
+        <!-- SECONDARY STATS (Inundation Area, Population, Infrastructure) -->
+        <div class="summary-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: -0.25rem;">
+          <div class="summary-card">
+            <div class="summary-label">Total Inundated Area</div>
+            <div class="summary-value" id="kpi-area" style="font-size: 1.2rem;">-- <span class="summary-unit">km²</span></div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Population at Risk</div>
+            <div class="summary-value" id="kpi-population" style="font-size: 1.2rem; color: #dc2626;">--</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Vulnerable Infrastructure</div>
+            <div class="summary-value" id="kpi-infrastructure" style="font-size: 1.2rem; color: #c2410c;">--</div>
+          </div>
+        </div>
+
+        <!-- INTERACTIVE FLOOD MAP -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>Hydrodynamic Inundation Map</span>
+            <div style="display: flex; gap: 0.5rem;">
+              <a id="download-shp" href="/api/export/latest/shp" class="btn btn-secondary">Download Shapefile (.shp)</a>
+              <a id="download-kml" href="/api/export/latest/kml" class="btn btn-secondary">Download KML</a>
+              <a id="download-geojson" href="/api/export/latest/geojson" class="btn btn-secondary">GeoJSON</a>
+            </div>
+          </div>
+          <div class="panel-body" style="padding: 0.5rem;">
+            <div id="map"></div>
+            <!-- Technical Legend -->
+            <div style="margin-top: 0.5rem; display: flex; gap: 1.25rem; font-size: 0.75rem; color: var(--text-secondary); flex-wrap: wrap;">
+              <div><span style="display:inline-block; width:10px; height:10px; background:#1e3a8a; margin-right:3px;"></span> Deep Inundation (&gt; 3.0 m)</div>
+              <div><span style="display:inline-block; width:10px; height:10px; background:#2563eb; margin-right:3px;"></span> Medium Inundation (1.5 m - 3.0 m)</div>
+              <div><span style="display:inline-block; width:10px; height:10px; background:#60a5fa; margin-right:3px;"></span> Shallow Inundation (0.2 m - 1.5 m)</div>
+              <div><span style="display:inline-block; width:8px; height:8px; background:#dc2626; border-radius:50%; margin-right:3px;"></span> Downstream Settlement</div>
+              <div><span style="display:inline-block; width:8px; height:8px; background:#c2410c; margin-right:3px;"></span> Critical Infrastructure</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HYDROGRAPH CHART & DOWNSTREAM SETTLEMENTS GRID -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          
+          <!-- Outflow Hydrograph Chart -->
+          <div class="panel">
+            <div class="panel-header">
+              <span>Discharge Hydrograph Q(t)</span>
+            </div>
+            <div class="panel-body" style="height: 260px;">
+              <canvas id="hydrographChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Impacted Downstream Settlements Table -->
+          <div class="panel">
+            <div class="panel-header">
+              <span>Impacted Downstream Settlements</span>
+            </div>
+            <div class="panel-body" style="padding: 0; max-height: 260px; overflow-y: auto;">
+              <table class="tech-table" id="settlements-table">
+                <thead>
+                  <tr>
+                    <th>Settlement</th>
+                    <th>Distance</th>
+                    <th>Depth</th>
+                    <th>Arrival</th>
+                    <th>Population</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="5" style="text-align:center; color: var(--text-muted); padding: 1.5rem;">Loading settlements...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MULTI-SCENARIO COMPARISON MATRIX SECTION -->
+    <div class="panel" style="margin-top: 0.5rem;">
+      <div class="panel-header">
+        <span>Hydrodynamic Scenario Comparison Matrix (SPH vs Delft3D Solvers & Basins)</span>
+        <button type="button" class="btn btn-secondary" onclick="refreshScenarioComparison()">Refresh Scenarios</button>
+      </div>
+      <div class="panel-body" style="padding: 0; overflow-x: auto;">
+        <table class="tech-table" id="comparison-table">
+          <thead>
+            <tr>
+              <th>Scenario Description</th>
+              <th>Solver Engine</th>
+              <th>Peak Q (m³/s)</th>
+              <th>Max Depth</th>
+              <th>Arrival Time</th>
+              <th>Inundated Area</th>
+              <th>Population Impact</th>
+              <th>Risk Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="8" style="text-align:center; color: var(--text-muted); padding: 1.5rem;">Loading recorded scenarios...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="comparison-narrative" style="padding: 0.75rem 1rem; background: var(--bg-muted); font-size: 0.8rem; color: var(--text-secondary); border-top: 1px solid var(--border-color);"></div>
+    </div>
+
+  </main>
+
+  <footer>
+    Dam Break Modelling & Flood Risk Simulation Prototype • SIH Problem Statement 26161 (NTRO) • Indian River Basins GIS Framework
+  </footer>
+
+  <script src="js/charts.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
