@@ -403,6 +403,9 @@ function updateDashboardUI(data) {
 
   // Update Settlements Table
   updateSettlementsTable(risk.details ? risk.details.submerged_settlements : []);
+
+  // Update Critical Infrastructure Table
+  updateInfrastructureTable(risk.details ? risk.details.submerged_infrastructure : []);
 }
 
 function updateSettlementsTable(settlements) {
@@ -420,11 +423,41 @@ function updateSettlementsTable(settlements) {
     <tr>
       <td><b>${s.name}</b></td>
       <td>${s.distance_km || '--'} km</td>
-      <td><span style="color: #2563eb; font-weight: 600;">${s.water_depth_m} m</span></td>
-      <td>${s.arrival_time_min} min</td>
+      <td><span style="color: #2563eb; font-weight: 600;">${Number(s.water_depth_m || 0).toFixed(2)} m</span></td>
+      <td>${Number(s.arrival_time_min || 0).toFixed(1)} min</td>
       <td><span style="color: #dc2626; font-weight: 600;">${(s.affected_population || 0).toLocaleString()}</span> / ${(s.total_population || 0).toLocaleString()}</td>
     </tr>
   `).join('');
+}
+
+function updateInfrastructureTable(infrastructure) {
+  const table = document.getElementById('infrastructure-table');
+  if (!table) return;
+  const tbody = table.querySelector('tbody');
+  if (!tbody) return;
+
+  if (!infrastructure || infrastructure.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted); padding: 1.25rem;">No critical infrastructure assets intersected by flood extent.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = infrastructure.map(inf => {
+    const crit = (inf.criticality || 'MODERATE').toUpperCase();
+    let critClass = 'badge-moderate';
+    if (crit === 'CRITICAL') critClass = 'badge-critical';
+    else if (crit === 'HIGH') critClass = 'badge-high';
+    else if (crit === 'LOW') critClass = 'badge-low';
+
+    return `
+      <tr>
+        <td><b>${inf.name}</b></td>
+        <td><span style="font-size: 0.775rem; color: var(--text-secondary);">${inf.type || 'General Asset'}</span></td>
+        <td><span class="badge ${critClass}">${crit}</span></td>
+        <td><span style="color: #2563eb; font-weight: 600;">${Number(inf.water_depth_m || 0).toFixed(2)} m</span></td>
+        <td>${Number(inf.arrival_time_min || 0).toFixed(1)} min</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 async function refreshScenarioComparison() {
