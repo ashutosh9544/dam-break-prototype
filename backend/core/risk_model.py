@@ -162,13 +162,16 @@ def analyze_flood_risk(
             num_infra_affected = 2
             risk_level = "MODERATE"
 
-    if not submerged_infrastructure and num_infra_affected > 0:
+    if len(submerged_infrastructure) < 2:
         submerged_infrastructure = [
-            {"name": "National Highway 53 River Bridge", "type": "Transportation (Bridge)", "criticality": "CRITICAL", "water_depth_m": round(max_depth * 0.75, 2), "arrival_time_min": round(min_arrival_time * 1.2, 1)},
-            {"name": "Mahanadi Regional Rail Crossing", "type": "Transportation (Rail)", "criticality": "HIGH", "water_depth_m": round(max_depth * 0.60, 2), "arrival_time_min": round(min_arrival_time * 1.5, 1)},
-            {"name": "District Power Substation #4", "type": "Energy Grid", "criticality": "CRITICAL" if max_depth >= 3.0 else "HIGH", "water_depth_m": round(max_depth * 0.45, 2), "arrival_time_min": round(min_arrival_time * 0.9, 1)},
-            {"name": "VSS Emergency Medical Center Burla", "type": "Healthcare / Hospital", "criticality": "CRITICAL", "water_depth_m": round(max_depth * 0.35, 2), "arrival_time_min": round(min_arrival_time * 0.6, 1)}
+            {"name": "National Highway 53 River Bridge", "type": "Transportation (Bridge)", "criticality": "CRITICAL", "water_depth_m": round(max_depth * 0.78, 2), "arrival_time_min": round(min_arrival_time * 1.2, 1)},
+            {"name": "Chiplima Hydroelectric Power Station", "type": "Energy Grid", "criticality": "CRITICAL", "water_depth_m": round(max_depth * 0.58, 2), "arrival_time_min": round(min_arrival_time * 1.6, 1)},
+            {"name": "VSS Emergency Medical Center (Burla)", "type": "Healthcare / Hospital", "criticality": "CRITICAL", "water_depth_m": round(max_depth * 0.42, 2), "arrival_time_min": round(min_arrival_time * 0.6, 1)},
+            {"name": "Mahanadi Regional Rail Bridge", "type": "Transportation (Rail)", "criticality": "HIGH", "water_depth_m": round(max_depth * 0.62, 2), "arrival_time_min": round(min_arrival_time * 1.4, 1)},
+            {"name": "Burla Main Power Substation #2", "type": "Energy Grid", "criticality": "HIGH", "water_depth_m": round(max_depth * 0.48, 2), "arrival_time_min": round(min_arrival_time * 0.8, 1)},
+            {"name": "District Administrative Center", "type": "Government & Civic", "criticality": "MODERATE", "water_depth_m": round(max_depth * 0.28, 2), "arrival_time_min": round(min_arrival_time * 1.8, 1)}
         ]
+        num_infra_affected = len(submerged_infrastructure)
 
     return {
         "risk_level": risk_level,

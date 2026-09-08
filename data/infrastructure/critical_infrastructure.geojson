@@ -4,43 +4,27 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "National Highway 53 Bridge",
+        "name": "National Highway 53 Mahanadi Bridge",
         "type": "Transportation (Bridge)",
-        "criticality": "CRITICAL"
+        "criticality": "CRITICAL",
+        "basin": "Mahanadi"
       },
       "geometry": {
         "type": "LineString",
-        "coordinates": [
-          [
-            83.96,
-            21.48
-          ],
-          [
-            83.975,
-            21.465
-          ]
-        ]
+        "coordinates": [[83.96, 21.48], [83.975, 21.465]]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "Sambalpur Railway Bridge",
+        "name": "Sambalpur Main Railway Bridge",
         "type": "Transportation (Rail)",
-        "criticality": "HIGH"
+        "criticality": "HIGH",
+        "basin": "Mahanadi"
       },
       "geometry": {
         "type": "LineString",
-        "coordinates": [
-          [
-            83.955,
-            21.472
-          ],
-          [
-            83.97,
-            21.458
-          ]
-        ]
+        "coordinates": [[83.955, 21.472], [83.97, 21.458]]
       }
     },
     {
@@ -48,44 +32,142 @@
       "properties": {
         "name": "Chiplima Hydroelectric Power Station",
         "type": "Energy Grid",
-        "criticality": "CRITICAL"
+        "criticality": "CRITICAL",
+        "basin": "Mahanadi"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          83.921,
-          21.415
-        ]
+        "coordinates": [83.921, 21.415]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "name": "VSS Institute of Medical Sciences (Burla)",
+        "name": "VSS Institute of Medical Sciences Hospital (Burla)",
         "type": "Healthcare / Hospital",
-        "criticality": "CRITICAL"
+        "criticality": "CRITICAL",
+        "basin": "Mahanadi"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          83.878,
-          21.501
-        ]
+        "coordinates": [83.878, 21.501]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Burla Regional Power Substation #2",
+        "type": "Energy Grid",
+        "criticality": "HIGH",
+        "basin": "Mahanadi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [83.885, 21.495]
       }
     },
     {
       "type": "Feature",
       "properties": {
         "name": "Sambalpur District Administrative Center",
-        "type": "Government",
-        "criticality": "MODERATE"
+        "type": "Government & Civic",
+        "criticality": "MODERATE",
+        "basin": "Mahanadi"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [
-          83.98,
-          21.47
-        ]
+        "coordinates": [83.98, 21.47]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tehri Hydro Power Complex Substation",
+        "type": "Energy Grid",
+        "criticality": "CRITICAL",
+        "basin": "Bhagirathi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [78.485, 30.372]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "NH-58 Rishikesh-Badrinath Highway Corridor",
+        "type": "Transportation (Highway)",
+        "criticality": "CRITICAL",
+        "basin": "Bhagirathi"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[78.52, 30.34], [78.58, 30.28]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Devprayag Confluence Suspension Bridge",
+        "type": "Transportation (Bridge)",
+        "criticality": "HIGH",
+        "basin": "Bhagirathi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [78.598, 30.146]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Moolamattom Underground Hydroelectric Station",
+        "type": "Energy Grid",
+        "criticality": "CRITICAL",
+        "basin": "Periyar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [76.892, 9.821]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Neriamangalam Bridge (NH-85 Munnar Corridor)",
+        "type": "Transportation (Bridge)",
+        "criticality": "CRITICAL",
+        "basin": "Periyar"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[76.77, 10.05], [76.79, 10.06]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Narmada Canal Headworks & Power Grid",
+        "type": "Water Resources & Energy",
+        "criticality": "CRITICAL",
+        "basin": "Narmada"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [73.755, 21.832]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bharuch NH-48 Golden Bridge Corridor",
+        "type": "Transportation (Bridge)",
+        "criticality": "CRITICAL",
+        "basin": "Narmada"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[73.00, 21.70], [73.02, 21.68]]
       }
     }
   ]
